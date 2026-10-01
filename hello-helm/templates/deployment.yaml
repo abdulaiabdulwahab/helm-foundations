@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  # .Release.Name comes from the helm install command
+  name: {{ .Release.Name }}-web
+
+spec:
+  # Read replicaCount from values.yaml
+  replicas: {{ .Values.replicaCount }}
+
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-web
+
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-web
+
+    spec:
+      containers:
+        - name: nginx
+
+          # Build image from repository + tag
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+          ports:
+            - containerPort: {{ .Values.containerPort }}
